@@ -15,7 +15,7 @@ class Position(models.Model):
 
 class Department(models.Model):
     name = models.CharField(max_length=100)
-    desctiption = models.CharField(max_length=200)
+    description = models.CharField(max_length=200)
     manager = models.ForeignKey(
         'Employee', on_delete=models.SET_NULL, null=True, related_name="manages")
 
