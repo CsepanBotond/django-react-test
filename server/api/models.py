@@ -25,7 +25,7 @@ class Department(models.Model):
 
 class Employee(models.Model):
     name = models.CharField(max_length=100)
-    email = models.CharField(max_length=100)
+    email = models.EmailField(max_length=100)
     position = models.ForeignKey(
         Position, on_delete=models.SET_NULL, null=True)
     department = models.ForeignKey(
