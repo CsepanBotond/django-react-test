@@ -4,11 +4,14 @@ from django.db import models
 # And so are constraints (or lack thereof)
 
 # Position has its designated table to make it easier to handle and more future-proof
+
+
 class Position(models.Model):
     name = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
+
 
 class Department(models.Model):
     name = models.CharField(max_length=100)
@@ -18,6 +21,7 @@ class Department(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class Employee(models.Model):
     name = models.CharField(max_length=100)
