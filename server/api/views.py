@@ -1,8 +1,10 @@
 from django.shortcuts import render
 from rest_framework import viewsets
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
-from api.models import Employee
-from api.serializers import EmployeeSerializer
+from api.models import Department, Employee
+from api.serializers import EmployeeSerializer, DepartmentSerializer, DepartmentEmployeesSerializer
 
 
 class EmployeeViewSet(viewsets.ModelViewSet):
@@ -20,3 +22,14 @@ class EmployeeViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(name=name)
 
         return queryset
+
+
+class DepartmentViewSet(viewsets.ModelViewSet):
+    queryset = Department.objects.all()
+    serializer_class = DepartmentSerializer
+
+    @action(detail=True)
+    def employees(self, request, pk=None):
+        department = self.get_object()
+
+        return Response(DepartmentEmployeesSerializer(department).data.get('employees'))

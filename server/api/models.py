@@ -29,7 +29,7 @@ class Employee(models.Model):
     position = models.ForeignKey(
         Position, on_delete=models.SET_NULL, null=True)
     department = models.ForeignKey(
-        Department, on_delete=models.SET_NULL, null=True)
+        Department, on_delete=models.SET_NULL, null=True, related_name='employees')
 
     def __str__(self):
         return self.name
