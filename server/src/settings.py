@@ -124,3 +124,10 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Here is the setup for Access-Control-Allow-Origin headers
+# to enable CORS from localhost:5000
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5000',
+    'http://127.0.0.1:5000',
+]
