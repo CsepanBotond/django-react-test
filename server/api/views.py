@@ -10,6 +10,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
     serializer_class = EmployeeSerializer
 
     def get_queryset(self):
+        '''Allow filtering on `name` and `email` fields'''
         queryset = Employee.objects.all()
         email = self.request.query_params.get('email')
         name = self.request.query_params.get('name')
