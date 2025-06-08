@@ -25,9 +25,9 @@ const Calendar: FunctionComponent = () => {
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
-        // Would preferably use tanstack query + axios, with queries/mutations generated with orval
+        // Would rather use tanstack query + axios, with queries/mutations generated with orval
         //   For simplicity's sake, here I'm using plain fetch
-        //   Also, the API url should be set externally e.g. using .env
+        //   Also, the API url base could be set externally e.g. using .env
         const resp = await fetch(new URL("/appointments/", API_BASE));
 
         if (!resp.ok) {
@@ -156,8 +156,8 @@ const Calendar: FunctionComponent = () => {
         </div>
         <div className="flex justify-end">
           <Button
-            text="Add appointment"
-            aria-label="add appointment"
+            text="New appointment"
+            aria-label="new appointment"
             onClick={() => alert("Not implemented!")}
           ></Button>
         </div>
