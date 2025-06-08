@@ -3,8 +3,8 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from api.models import Department, Employee
-from api.serializers import EmployeeSerializer, DepartmentSerializer, DepartmentEmployeesSerializer
+from api.models import Department, Employee, Position
+from api.serializers import EmployeeSerializer, DepartmentSerializer, DepartmentEmployeesSerializer, PositionSerializer
 
 
 class EmployeeViewSet(viewsets.ModelViewSet):
@@ -33,3 +33,9 @@ class DepartmentViewSet(viewsets.ModelViewSet):
         department = self.get_object()
 
         return Response(DepartmentEmployeesSerializer(department).data.get('employees'))
+
+
+class PositionViewSet(viewsets.ModelViewSet):
+    queryset = Position.objects.all()
+    serializer_class = PositionSerializer
+

@@ -18,11 +18,12 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
 
-from api.views import DepartmentViewSet, EmployeeViewSet
+from api.views import DepartmentViewSet, EmployeeViewSet, PositionViewSet
 
 router = routers.DefaultRouter()
 router.register(r'employees', EmployeeViewSet)
 router.register(r'departments', DepartmentViewSet)
+router.register(r'positions', PositionViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
