@@ -65,12 +65,12 @@ const Calendar: FunctionComponent = () => {
   }, [appointments]);
 
   const getAppointmentBoxTop = (a: Appointment) =>
-    (a.start.getUTCHours() - 6) * 64 + (a.start.getUTCMinutes() / 60) * 64 + 8;
+    (a.start.getHours() - 6) * 64 + (a.start.getMinutes() / 60) * 64 + 8;
 
   const getAppointmentBoxHeight = (a: Appointment) => {
     return (
-      (a.end.getUTCHours() - a.start.getUTCHours()) * 64 +
-      ((a.end.getUTCMinutes() - a.start.getUTCMinutes()) / 60) * 64 +
+      (a.end.getHours() - a.start.getHours()) * 64 +
+      ((a.end.getMinutes() - a.start.getMinutes()) / 60) * 64 +
       8
     );
   };
