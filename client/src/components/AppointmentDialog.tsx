@@ -72,7 +72,7 @@ const AppointmentDialog: FunctionComponent<
         }
         dialogRef.current = node;
       }}
-      className="p-4 bg-slate-400 rounded m-auto max-w-3xl"
+      className="p-4 dark:bg-zinc-800 bg-sky-50 rounded m-auto max-w-3xl overflow-visible"
     >
       <div className="flex flex-col w-full h-full">
         {isLoading ? (
@@ -84,8 +84,6 @@ const AppointmentDialog: FunctionComponent<
               <div className="flex gap-4">
                 <div>
                   <label htmlFor="startpicker"></label>
-                  {/* FIXME: For whatever reason, clicking the control throws an error. Since the update function implementation is
-                  beyond the scope of this task, I won't try to fix this component either. */}
                   <DatePicker
                     id="startpicker"
                     selected={appointment?.start}
@@ -104,9 +102,11 @@ const AppointmentDialog: FunctionComponent<
                 </div>
               </div>
               <select name="departments" id="departments">
-                <option value="">Select department</option>
+                <option value="" className="dark:bg-zinc-800">
+                  Select department
+                </option>
                 {departments?.map((d) => (
-                  <option key={d.id} value={d.id}>
+                  <option key={d.id} value={d.id} className="dark:bg-zinc-800">
                     {d.name}
                   </option>
                 ))}

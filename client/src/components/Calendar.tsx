@@ -139,7 +139,7 @@ const Calendar: FunctionComponent = () => {
         ref={dialogRef}
         appointmentId={appointmentId}
       ></AppointmentDialog>
-      <aside className="absolute h-full max-w-[500px] w-fit flex flex-col px-2 pt-3 pb-3 gap-2 justify-between bg-slate-800 rounded-r-2xl">
+      <aside className="absolute h-full max-w-[500px] w-fit flex flex-col px-2 pt-3 pb-3 gap-2 justify-between rounded-r-2xl bg-sky-50 dark:bg-zinc-800">
         <div className="flex justify-around">
           <Button
             text={"◀"}
@@ -149,6 +149,7 @@ const Calendar: FunctionComponent = () => {
           <DatePicker
             selected={selectedDate}
             onChange={(date) => setSelectedDate(date ?? new Date(Date.now()))}
+            title="pick date"
           ></DatePicker>
           <Button
             text={"▶"}
@@ -156,14 +157,14 @@ const Calendar: FunctionComponent = () => {
             onClick={nextDay}
           ></Button>
         </div>
-        <div className="overflow-y-auto p-2 grid grid-cols-[min-content_1fr] gap-x-0.5 h-full relative box-content border-2 border-slate-300 rounded">
+        <div className="overflow-y-auto p-2 grid grid-cols-[min-content_1fr] gap-x-0.5 h-full relative box-content border-2 border-blue-300 dark:border-zinc-700 rounded">
           {Array.from({ length: 16 }).map((_, idx) => {
             return (
               <div className="contents" key={Math.random().toString()}>
                 <span className="inline-block text-sm text-right align-text-bottom h-16">
                   {`${(idx + 6).toString().padStart(2, "0")}:00`}
                 </span>
-                <div className="border-t-2 border-t-slate-200 border-dotted w-xs"></div>
+                <div className="border-t-2 border-t-blue-300 dark:border-t-zinc-700 border-dotted w-xs"></div>
               </div>
             );
           })}
@@ -176,7 +177,7 @@ const Calendar: FunctionComponent = () => {
 
                 return (
                   <div
-                    className="w-full col-start-2 col-span-1 absolute flex"
+                    className="w-full col-start-2 col-span-1 absolute flex mx-1"
                     style={{
                       top: `${getAppointmentBoxTop(disp)}px`,
                       height: `${getAppointmentBoxHeight(disp)}px`,
@@ -184,7 +185,7 @@ const Calendar: FunctionComponent = () => {
                     key={disp.id}
                   >
                     <div
-                      className={` bg-amber-700 p-1 rounded-xl align-top cursor-pointer w-full`}
+                      className={`bg-sky-300 text-sky-900 dark:bg-sky-700 dark:text-sky-100 font-bold p-1 rounded-xl align-top cursor-pointer w-full`}
                       onClick={() => openDetails(disp.id)}
                     >
                       {disp.title}
@@ -192,7 +193,7 @@ const Calendar: FunctionComponent = () => {
                     <div
                       className={`${
                         g.length > 1 ? "block" : "hidden"
-                      } w-fit m-auto bg-slate-600 opacity-90 rounded p-3`}
+                      } w-fit m-auto bg-blue-400/50 opacity-90 rounded font-bold p-3`}
                     >
                       {`+${g.length - 1}`}
                     </div>
