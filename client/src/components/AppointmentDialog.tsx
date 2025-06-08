@@ -5,10 +5,10 @@ import {
   type ComponentPropsWithRef,
   type FunctionComponent,
 } from "react";
-import { API_BASE } from "../constants";
-import Button from "./Button";
-import type { Appointment, Department } from "../types";
 import DatePicker from "react-datepicker";
+import { API_BASE } from "../constants";
+import type { Appointment, Department, Employee } from "../types";
+import Button from "./Button";
 
 const AppointmentDialog: FunctionComponent<
   ComponentPropsWithRef<"dialog"> & { appointmentId: number }
@@ -17,6 +17,9 @@ const AppointmentDialog: FunctionComponent<
   const [appointment, setAppointment] = useState<Appointment | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [departments, setDetpartments] = useState<Department[] | null>(null);
+  const [selectedDepartment, setSelectedDepartment] =
+    useState<Department | null>(null);
+  const [, setDepartmentEmployees] = useState<Employee[]>([]);
 
   useEffect(() => {
     setIsLoading(true);
@@ -60,6 +63,34 @@ const AppointmentDialog: FunctionComponent<
     fetchAppointmentDetails();
   }, [appointmentId]);
 
+  useEffect(() => {
+    const fetchDepartmentEmployees = async () => {
+      try {
+        if (!selectedDepartment) {
+          throw Error("No department selected");
+        }
+
+        const resp = await fetch(
+          new URL(`/departments/${selectedDepartment.id}/employees/`, API_BASE)
+        );
+
+        if (!resp.ok) {
+          throw Error(`Server responded with error ${resp.status}`);
+        }
+
+        const data = await resp.json();
+
+        console.log(data);
+
+        setDepartmentEmployees(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchDepartmentEmployees();
+  }, [selectedDepartment]);
+
   return (
     <dialog
       ref={(node) => {
@@ -101,8 +132,18 @@ const AppointmentDialog: FunctionComponent<
                   ></DatePicker>
                 </div>
               </div>
-              <select name="departments" id="departments">
-                <option value="" className="dark:bg-zinc-800">
+              <select
+                name="departments"
+                id="departments"
+                onChange={(event) =>
+                  setSelectedDepartment(
+                    departments?.find(
+                      ({ id }) => id.toString() === event.target.value
+                    ) ?? null
+                  )
+                }
+              >
+                <option value="" className="dark:bg-zinc-800" disabled>
                   Select department
                 </option>
                 {departments?.map((d) => (
