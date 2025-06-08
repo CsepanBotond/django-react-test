@@ -8,6 +8,7 @@ import {
 import { API_BASE } from "../constants";
 import Button from "./Button";
 import type { Appointment, Department } from "../types";
+import DatePicker from "react-datepicker";
 
 const AppointmentDialog: FunctionComponent<
   ComponentPropsWithRef<"dialog"> & { appointmentId: number }
@@ -76,16 +77,69 @@ const AppointmentDialog: FunctionComponent<
           <>
             <h1 className="text-center">{appointment?.title}</h1>
             <form action="" className="flex flex-col gap-3">
-              <div></div>
+              <div className="flex gap-4">
+                <div>
+                  <label htmlFor="startpicker"></label>
+                  {/* FIXME: For whatever reason, clicking the control throws an error. Since the update function implementation is
+                  beyond the scope of this task, I won't try to fix this component either. */}
+                  <DatePicker
+                    id="startpicker"
+                    selected={appointment?.start}
+                    showTimeSelect
+                    dateFormat={"Pp"}
+                  ></DatePicker>
+                </div>
+                <div>
+                  <label htmlFor="endpicker"></label>
+                  <DatePicker
+                    id="endpicker"
+                    selected={appointment?.end}
+                    showTimeSelect
+                    dateFormat={"Pp"}
+                  ></DatePicker>
+                </div>
+              </div>
               <select name="departments" id="departments">
                 <option value="">Select department</option>
                 {departments?.map((d) => (
-                  <option value={d.id}>{d.name}</option>
+                  <option key={d.id} value={d.id}>
+                    {d.name}
+                  </option>
                 ))}
               </select>
+              {appointment?.participation?.length ? (
+                appointment?.participation?.map((e) => {
+                  return (
+                    <div className="flex justify-between">
+                      <span>{e.name}</span>
+                      <Button
+                        text="×"
+                        onClick={() =>
+                          alert("Remove participant (not implemented)")
+                        }
+                      ></Button>
+                    </div>
+                  );
+                })
+              ) : (
+                <p>There are no participants for this appointment</p>
+              )}
+
+              <div>
+                <Button
+                  text="Add participant"
+                  onClick={() => alert("Adding participant (not implemented)")}
+                ></Button>
+              </div>
               <div className="flex w-full justify-end gap-1">
-                <Button text={"Save"} onClick={() => alert("Not implemented")}></Button>
-                <Button text={"Update"} onClick={() => alert("Not implemented")}></Button>
+                <Button
+                  text={"Save"}
+                  onClick={() => alert("Not implemented")}
+                ></Button>
+                <Button
+                  text={"Update"}
+                  onClick={() => alert("Not implemented")}
+                ></Button>
                 <Button
                   text={"Close"}
                   onClick={() => dialogRef.current?.close()}
