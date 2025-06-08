@@ -3,8 +3,8 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from api.models import Department, Employee, Position
-from api.serializers import EmployeeSerializer, DepartmentSerializer, DepartmentEmployeesSerializer, PositionSerializer
+from api.models import Appointment, Department, Employee, Position
+from api.serializers import AppointmentSerializer, EmployeeSerializer, DepartmentSerializer, DepartmentEmployeesSerializer, PositionSerializer
 
 
 class EmployeeViewSet(viewsets.ModelViewSet):
@@ -39,3 +39,7 @@ class PositionViewSet(viewsets.ModelViewSet):
     queryset = Position.objects.all()
     serializer_class = PositionSerializer
 
+
+class AppointmentViewSet(viewsets.ModelViewSet):
+    queryset = Appointment.objects.prefetch_related('participation')
+    serializer_class = AppointmentSerializer

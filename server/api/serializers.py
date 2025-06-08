@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from api.models import Department, Employee, Position
+from api.models import Appointment, Department, Employee, Position
 
 class EmployeeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -27,3 +27,11 @@ class PositionSerializer(serializers.ModelSerializer):
         model = Position
         fields = '__all__'
 
+
+class AppointmentSerializer(serializers.ModelSerializer):
+    participation = EmployeeSerializer(many=True, read_only=True)
+    employee = EmployeeSerializer(read_only=True)
+
+    class Meta:
+        model = Appointment
+        fields = '__all__'
