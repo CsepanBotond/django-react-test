@@ -5,10 +5,12 @@ import {
   useState,
   type FunctionComponent,
 } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { API_BASE } from "../constants";
+import type { Appointment } from "../types";
 import AppointmentDialog from "./AppointmentDialog";
 import Button from "./Button";
-import type { Appointment } from "../types";
-import { API_BASE } from "../constants";
 
 /**
  * This component contains graphics for the actual sidebar with the date picker and appointment boxes
@@ -87,12 +89,17 @@ const Calendar: FunctionComponent = () => {
     dialogRef.current?.showModal();
   }, []);
 
-  const nextDay = () => {
-    alert("Not implemented!");
-  };
-  const prevDay = () => {
-    alert("Not implemented");
-  };
+  const nextDay = useCallback(() => {
+    const newDate = new Date(selectedDate);
+    newDate.setDate(selectedDate.getDate() + 1);
+    setSelectedDate(newDate);
+  }, [selectedDate]);
+
+  const prevDay = useCallback(() => {
+    const newDate = new Date(selectedDate);
+    newDate.setDate(selectedDate.getDate() - 1);
+    setSelectedDate(newDate);
+  }, [selectedDate]);
 
   return (
     <>
@@ -107,7 +114,10 @@ const Calendar: FunctionComponent = () => {
             aria-label="to previous day"
             onClick={prevDay}
           ></Button>
-          <Button text={selectedDate?.toLocaleDateString() ?? "NA"}></Button>
+          <DatePicker
+            selected={selectedDate}
+            onChange={(date) => setSelectedDate(date ?? new Date(Date.now()))}
+          ></DatePicker>
           <Button
             text={"▶"}
             aria-label="to next day"
