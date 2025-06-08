@@ -42,7 +42,11 @@ const AppointmentDialog: FunctionComponent<
         }
 
         const data = await resp.json();
-        setAppointment(data);
+        setAppointment({
+          ...data,
+          start: new Date(data.start),
+          end: new Date(data.end),
+        });
 
         const deps = await resp2.json();
         setDetpartments(deps);
