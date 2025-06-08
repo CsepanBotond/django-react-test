@@ -17,6 +17,7 @@ import Button from "./Button";
  */
 const Calendar: FunctionComponent = () => {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [overlapGroups, setOverlapGroups] = useState<Appointment[][]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date(Date.now()));
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -33,20 +34,51 @@ const Calendar: FunctionComponent = () => {
         if (!resp.ok) {
           throw Error(`Server responded with error code ${resp.status}`);
         }
-        const appointments = await resp.json();
-        console.log(appointments);
+        const appointmentsRaw = await resp.json();
+        console.log(appointmentsRaw);
 
-        setAppointments(
-          (appointments as Appointment[])
-            .map((a) => ({
-              ...a,
-              start: new Date(a.start),
-              end: new Date(a.end),
-            }))
-            .sort((first, second) => {
-              return first.start.getTime() - second.start.getTime();
-            })
-        );
+        const appointments = (appointmentsRaw as Appointment[])
+          .map((a) => ({
+            ...a,
+            start: new Date(a.start),
+            end: new Date(a.end),
+          }))
+          .sort((first, second) => {
+            return first.start.getTime() - second.start.getTime();
+          });
+
+        setAppointments(appointments);
+
+        const overlaps: Appointment[][] = [];
+
+        const doesOverlap = (a: Appointment, b: Appointment) => {
+          return (
+            a.start.getTime() < b.end.getTime() &&
+            a.end.getTime() > b.start.getTime()
+          );
+        };
+
+        appointments.forEach((a) => {
+          if (!overlaps.length) {
+            overlaps.push([a]);
+            return;
+          }
+
+          const last = overlaps.pop();
+          if (last?.find((l) => doesOverlap(l, a))) {
+            last.push(a);
+            overlaps.push(last);
+            return;
+          }
+
+          if (last) {
+            overlaps.push(last);
+          }
+          overlaps.push([a]);
+        });
+
+        setOverlapGroups(overlaps);
+
         setIsLoading(false);
       } catch (error) {
         // In a real world project, the error would be forwarded to an error boundary
@@ -71,7 +103,7 @@ const Calendar: FunctionComponent = () => {
     return (
       (a.end.getHours() - a.start.getHours()) * 64 +
       ((a.end.getMinutes() - a.start.getMinutes()) / 60) * 64 +
-      8
+      2
     );
   };
 
@@ -136,20 +168,34 @@ const Calendar: FunctionComponent = () => {
             );
           })}
           {!isLoading &&
-            appointments
-              .filter((a) => isSameDay(a.start, selectedDate))
-              .map((a) => {
+            // TODO: As of yet, this doesn't really deal with appointments spanning multiple days
+            overlapGroups
+              .filter(([a]) => isSameDay(a.start, selectedDate))
+              .map((g) => {
+                const disp = g[0];
+
                 return (
                   <div
-                    key={a.id}
-                    className={`col-start-2 col-span-1 absolute bg-amber-700 p-1 rounded-xl align-top w-full cursor-pointer`}
+                    className="w-full col-start-2 col-span-1 absolute flex"
                     style={{
-                      top: `${getAppointmentBoxTop(a)}px`,
-                      height: `${getAppointmentBoxHeight(a)}px`,
+                      top: `${getAppointmentBoxTop(disp)}px`,
+                      height: `${getAppointmentBoxHeight(disp)}px`,
                     }}
-                    onClick={() => openDetails(a.id)}
+                    key={disp.id}
                   >
-                    {a.title}
+                    <div
+                      className={` bg-amber-700 p-1 rounded-xl align-top cursor-pointer w-full`}
+                      onClick={() => openDetails(disp.id)}
+                    >
+                      {disp.title}
+                    </div>
+                    <div
+                      className={`${
+                        g.length > 1 ? "block" : "hidden"
+                      } w-fit m-auto bg-slate-600 opacity-90 rounded p-3`}
+                    >
+                      {`+${g.length - 1}`}
+                    </div>
                   </div>
                 );
               })}
