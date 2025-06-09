@@ -29,8 +29,10 @@ class PositionSerializer(serializers.ModelSerializer):
 
 
 class AppointmentSerializer(serializers.ModelSerializer):
-    participation = EmployeeSerializer(many=True, read_only=True)
-    employee = EmployeeSerializer(read_only=True)
+    participation = serializers.PrimaryKeyRelatedField(
+        many=True, queryset=Employee.objects.all())
+    employee = serializers.PrimaryKeyRelatedField(
+        queryset=Employee.objects.all())
 
     class Meta:
         model = Appointment

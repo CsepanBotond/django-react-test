@@ -87,8 +87,8 @@ class EmployeeTests(TestCase):
     def test_create(self):
         name = 'New Employee'
         email = 'ne@inc.com'
-        pos = 1
-        dep = 2
+        pos = self.employee_position.id
+        dep = self.second_dep.id
 
         resp = self.client.post('/employees/', {
             'name': name,
@@ -97,7 +97,7 @@ class EmployeeTests(TestCase):
             'department': dep
         }, type='json')
 
-        found = Employee.objects.get(name='New Employee')
+        found = Employee.objects.all().filter(name='New Employee').first()
 
         self.assertEqual(resp.status_code, 201)
 
@@ -114,9 +114,9 @@ class EmployeeTests(TestCase):
         pass
 
     def test_retrieve_one(self):
-        resp = self.client.get('/employees/1/')
+        resp = self.client.get(f'/employees/{self.first_emp.id}/')
         self.assertEqual(resp.status_code, 200)
-        self.assertEqual(resp.json()['name'], Employee.objects.get(id=1).name)
+        self.assertEqual(resp.json()['name'], self.first_emp.name)
         pass
 
     def test_retrieve_filtered(self):
@@ -148,30 +148,33 @@ class EmployeeTests(TestCase):
         pass
 
     def test_update(self):
-        resp = self.client.patch('/employees/1/', {
+        first_id = self.first_emp.id
+        resp = self.client.patch(f'/employees/{first_id}/', {
             'name': 'First Employee II',
-            'position': 2
+            'position': self.manager_position.id,
         }, type='json')
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(Employee.objects.get(
-            id=1).position, self.manager_position)
+            id=first_id).position, self.manager_position)
 
-        resp2 = self.client.put('/employees/2/', {
+        second_id = self.second_emp.id
+        resp2 = self.client.put(f'/employees/{second_id}/', {
             'name': 'New Name',
             'email': 'new@inc.com',
-            'position': 1,
-            'department': 2,
+            'position': self.employee_position.id,
+            'department': self.second_dep.id,
         }, type='json')
         self.assertEqual(resp2.status_code, 200)
-        self.assertEqual('New Name', Employee.objects.get(id=2).name)
+        self.assertEqual('New Name', Employee.objects.get(id=second_id).name)
 
         pass
 
     def test_destroy(self):
-        resp = self.client.delete('/employees/1/')
+        id = self.first_emp.id
+        resp = self.client.delete(f'/employees/{id}/')
         self.assertEqual(resp.status_code, 204)
         self.assertRaises(Employee.DoesNotExist,
-                          lambda: Employee.objects.get(id=1))
+                          lambda: Employee.objects.get(id=id))
         pass
     pass
 
@@ -188,28 +191,23 @@ class AppointmentTests(TestCase):
     def test_retrieve(self):
         resp = self.client.get('/appointments/')
         self.assertEqual(resp.status_code, 200)
-        print(resp.json())
         pass
 
     def test_retrieve_one(self):
         pass
 
     def test_update(self):
-        resp = self.client.patch('/appointments/1/', {
+        app_id = self.first_app.id
+        resp = self.client.patch(f'/appointments/{app_id}/', {
             'participation': [
-                {
-                    'id': 1,
-                },
-                {
-                    'id': 2
-                }
+                self.first_emp.id,
+                self.second_emp.id
             ],
-            'employee': 3
+            'employee': self.third_man.id
         }, type='json')
-        print(resp.status_code)
-        resp2 = self.client.get("/appointments/1/")
-        print(resp2.json())
-        print(Appointment.objects.get(id=1).participation)
+        self.assertEqual(resp.status_code, 200)
+        self.assertTrue(Appointment.objects.get(
+            id=app_id).participation.contains(Employee.objects.get(id=self.first_emp.id)))
         pass
 
     def test_destroy(self):

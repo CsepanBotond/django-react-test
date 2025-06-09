@@ -41,5 +41,5 @@ class PositionViewSet(viewsets.ModelViewSet):
 
 
 class AppointmentViewSet(viewsets.ModelViewSet):
-    queryset = Appointment.objects.prefetch_related('participation')
+    queryset = Appointment.objects.all()
     serializer_class = AppointmentSerializer
