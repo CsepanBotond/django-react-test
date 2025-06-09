@@ -97,13 +97,12 @@ const Calendar: FunctionComponent = () => {
   }, [appointments]);
 
   const getAppointmentBoxTop = (a: Appointment) =>
-    (a.start.getHours() - 6) * 64 + (a.start.getMinutes() / 60) * 64 + 8;
+    (a.start.getHours() - 5) * 64 + (a.start.getMinutes() / 60) * 64 - 26;
 
   const getAppointmentBoxHeight = (a: Appointment) => {
     return (
       (a.end.getHours() - a.start.getHours()) * 64 +
-      ((a.end.getMinutes() - a.start.getMinutes()) / 60) * 64 +
-      2
+      ((a.end.getMinutes() - a.start.getMinutes()) / 60) * 64
     );
   };
 
@@ -160,11 +159,20 @@ const Calendar: FunctionComponent = () => {
         <div className="overflow-y-auto p-2 grid grid-cols-[min-content_1fr] gap-x-0.5 h-full relative box-content border-2 border-blue-300 dark:border-zinc-700 rounded">
           {Array.from({ length: 16 }).map((_, idx) => {
             return (
-              <div className="contents" key={Math.random().toString()}>
-                <span className="inline-block text-sm text-right align-text-bottom h-16">
-                  {`${(idx + 6).toString().padStart(2, "0")}:00`}
-                </span>
-                <div className="border-t-2 border-t-blue-300 dark:border-t-zinc-700 border-dotted w-xs"></div>
+              <div
+                className="contents box-border"
+                key={Math.random().toString()}
+              >
+                <div className="flex justify-end text-sm h-16">
+                  <span className="my-auto">{`${(idx + 6)
+                    .toString()
+                    .padStart(2, "0")}:00`}</span>
+                </div>
+                <div className="grid grid-rows-2 divide-y-2 dark:divide-zinc-700 divide-blue-300 divide-dotted w-xs box-border">
+                  {/* These empty divs are needed for the dividers */}
+                  <div></div>
+                  <div></div>
+                </div>
               </div>
             );
           })}

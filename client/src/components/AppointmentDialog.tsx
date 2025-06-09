@@ -19,7 +19,9 @@ const AppointmentDialog: FunctionComponent<
   const [departments, setDetpartments] = useState<Department[] | null>(null);
   const [selectedDepartment, setSelectedDepartment] =
     useState<Department | null>(null);
-  const [, setDepartmentEmployees] = useState<Employee[]>([]);
+  const [departmentEmployees, setDepartmentEmployees] = useState<Employee[]>(
+    []
+  );
 
   useEffect(() => {
     setIsLoading(true);
@@ -152,8 +154,8 @@ const AppointmentDialog: FunctionComponent<
                   </option>
                 ))}
               </select>
-              {appointment?.participation?.length ? (
-                appointment?.participation?.map((e) => {
+              {departmentEmployees.length ? (
+                departmentEmployees?.map((e) => {
                   return (
                     <div className="flex justify-between">
                       <span>{e.name}</span>
